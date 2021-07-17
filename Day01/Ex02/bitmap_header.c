@@ -9,7 +9,7 @@
 
 void make_bmp_header(bmp_header_t * header, size_t size)
 {
-    header->magic = 0x424D;
+    header->magic = 0x4D42;
     header->size = (size * size * 4) + (sizeof(bmp_header_t)) +
     (sizeof(bmp_info_header_t));
     header->_app1 = 0;
