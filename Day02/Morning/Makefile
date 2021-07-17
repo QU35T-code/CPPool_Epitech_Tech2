@@ -6,16 +6,13 @@
 ##
 
 all:
-		make -C Day01/
-		make -C Day02/
+		make -C Ex00/
 
 clean:
-		make clean -C Day01/
-		make clean -C Day02/
+		make clean -C Ex00/
 
 fclean:
-		make fclean -C Day01/
-		make fclean -C Day02/
+		make fclean -C Ex00/
 
 re:		fclean	all
 
