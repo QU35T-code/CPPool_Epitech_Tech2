@@ -7,15 +7,12 @@
 
 all:
 		make -C Morning/
-		make -C Afternoon/
 
 clean:
 		make clean -C Morning/
-		make clean -C Afternoon/
 
 fclean:
 		make fclean -C Morning/
-		make fclean -C Afternoon/
 
 re:		fclean	all
 
