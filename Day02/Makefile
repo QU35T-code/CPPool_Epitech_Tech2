@@ -6,16 +6,13 @@
 ##
 
 all:
-		make -C Day01/
-		make -C Day02/
+		make -C Morning/
 
 clean:
-		make clean -C Day01/
-		make clean -C Day02/
+		make clean -C Morning/
 
 fclean:
-		make fclean -C Day01/
-		make fclean -C Day02/
+		make fclean -C Morning/
 
 re:		fclean	all
 
