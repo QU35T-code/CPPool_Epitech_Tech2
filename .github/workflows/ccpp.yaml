@@ -1,0 +1,26 @@
+name: C/C++ with Make
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: make
+      run: make
+    - name: make fclean
+      run: make fclean
+  Epitest:
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker:latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: make
+      run: make
+    - name: make fclean
+      run: make fclean
