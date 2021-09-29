@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+
+import os
+
+##################### GLOBAL #################################
+
+passed = 0
+binary_path = "./autoCompletion"
+city_simple = "./tests/city_simple"
+city_compound = "./tests/city_compound"
+adress_simple = "./tests/adress_simple"
+errors = "./tests/errors"
+
+##################### FUNCTIONS #################################
+
+def t_check_return(payload, test_name, expected):
+    os.system(payload + " 2>/dev/null 1>/dev/null; echo $? > ret.txt")
+    f = open("ret.txt", "r")
+    ret = f.read()
+    if str(expected) in ret:
+        print("\t " + test_name + ": PASSED")
+        global passed
+        passed = passed + 1
+    else:
+        print("\t " + test_name + ": KO")
+        os.system("echo '" + test_name + ":\n\tActual: " + ret.rstrip() + "\n\tExpected: " + str(expected) + "' >> errors.txt")
+
+def t_compare_string(payload, test_name, expected):
+    os.system(payload + " 2>/dev/null > ret.txt")
+    f = open("ret.txt", "r")
+    ret = f.read()
+    if (expected == ret):
+        print("\t " + test_name + ": PASSED")
+        global passed
+        passed = passed + 1
+    else:
+        print("\t " + test_name + ": KO")
+        os.system("echo '" + test_name + ":\n\tActual: " + ret.rstrip() + "\n\tExpected: " + expected.rstrip() + "' >> errors.txt")
+
+def score(nb_tests):
+    global passed
+    total = (passed * 100) / nb_tests
+    print("\nScore: " + str(total) + "%")
+
+def main():
+    print("B-SYN-400-TLS-4-1-autoCompletion\n")
+    print("City (simple) - 4 tests")
+    t_compare_string("echo '' | " + binary_path + " " + city_simple + "/test1.txt", "1 - 1 adress", "=> Lille, 34 rue Faidherbe\n")
+    t_compare_string("echo 'L' | " + binary_path + " " + city_simple + "/test2.txt", "2 - 2 adresses 2 cities", "{l} {t}\n=> Lille, 34 rue Faidherbe\n")
+    t_compare_string("echo 'Y' | " + binary_path + " " + city_simple + "/test3.txt", "3 - 2 adresses 2 cities", "{Li} {Ly}\n=> Lyon, 43 rue Guillotin\n")
+    t_compare_string("echo 'L' | " + binary_path + " " + city_simple + "/test4.txt", "4 - 3 adresses 2 cities", "{t} {l}\n=> Lille, 34 rue Faidherbe\n")
+    print("\nCity (compound) - 0 tests")
+    #t_compare_string("echo 'd' | " + binary_path + " " + city_compound + "/test1.txt", "1 - 2A", "{m} {d}\n=> Mont de Marsan, 34 rue Faidherbe\n")
+    #t_compare_string("echo 'ma' | " + binary_path + " " + city_compound + "/test2.txt", "2 - 2B", "{m} {d}\n{Mo} {Ma}\n=> Mont de Marsan, 34 rue Faidherbe\n")
+    print("\nAddress (simple) - 3 tests")
+    t_compare_string("echo 'F' | " + binary_path + " " + adress_simple + "/test1.txt", "1 - 2 adresses 1 city", "{LILLE, f} {LILLE, p}\n=> Lille, 34 rue Faidherbe\n")
+    t_compare_string("echo 'e' | " + binary_path + " " + adress_simple + "/test2.txt", "2 - 2 adresses 1 city", "{LILLE, FAIDHe} {LILLE, FAIDHi}\n=> Lille, 34 rue Faidherbe\n")
+    t_compare_string("echo 'ip' | " + binary_path + " " + adress_simple + "/test3.txt", "3 - 4 adresses 2 cities", "{Li} {Ly}\n{LILLE, f} {LILLE, j} {LILLE, p}\n=> Lille, 54 rue Popol\n")
+    print("\nError management - 3 tests")
+    t_check_return(binary_path + " " + errors + "/empty.txt", "1 - Empty file", 84)
+    t_check_return(binary_path, "2 - No arguments", 84)
+    t_check_return(binary_path + " hello I am here", "3 - Too many arguments", 84)
+    score(10)
+    exit(0)
+
+if __name__ == '__main__':
+    main()
